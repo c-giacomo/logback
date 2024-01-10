@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOGS" value="/test_log" />
+
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %d{ISO8601} %-5p %c - %m%n
+            </Pattern>
+        </layout>
+    </appender>
+    
+    <!-- TEST TRACCIATO TOPIC -->
+    <appender name="TestTopicFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS}/test-topic.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/test-topic-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+        	<maxFileSize>10MB</maxFileSize>    
+        	<maxHistory>30</maxHistory>
+        	<totalSizeCap>1GB</totalSizeCap>
+        	</rollingPolicy>
+        <encoder>
+            <Pattern>%m%n</Pattern>
+        </encoder>
+    </appender>
+	
+	<!--  
+	<appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
+		<connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+			<driverClass>org.postgresql.Driver</driverClass>
+			<url>jdbc:postgresql://localhost:5432/logback</url>
+			<user>postgres</user>
+			<password>2304</password>
+		</connectionSource>
+	</appender>  -->
+    
+    <!-- LOG everything at INFO level -->
+    <root level="info">
+        <appender-ref ref="Console" />
+    </root>
+
+    <!-- LOG "org.springframework*" at ERROR level -->
+    <logger name="org.springframework" level="error" additivity="false">
+        <appender-ref ref="Console" />
+    </logger>
+
+    <!-- LOG "org.hibernate.SQL" at DEBUG level -->
+    <logger name="org.hibernate.SQL" level="debug" additivity="false">
+        <appender-ref ref="Console" />
+    </logger>
+
+    
+    <logger name="test-topic" level="info" additivity="false">
+        <appender-ref ref="TestTopicFile" />
+        <appender-ref ref="Console" />
+    </logger>
+
+</configuration>
